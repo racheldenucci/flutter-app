@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/pages/home.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_application_2/pages/main_page.dart';
-import 'package:flutter_application_2/pages/profile.dart';
+
 
 void main() async {
   WidgetsFlutterBinding

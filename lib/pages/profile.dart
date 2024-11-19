@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/pages/scanner.dart';
+
 
 class Profile extends StatefulWidget {
   const Profile({super.key});

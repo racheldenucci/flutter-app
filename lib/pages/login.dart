@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/pages/main_page.dart';
 import 'package:flutter_application_2/pages/profile.dart';
 
 class Login extends StatefulWidget {
@@ -95,7 +96,7 @@ class _LoginState extends State<Login> {
                 User? user = await login(email: _emailController.text, password: _passwordController.text, context: context);
                 print(user);
                 if(user != null){
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> Profile()));
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> MainPage()));
                 }
               },
               child: Text(

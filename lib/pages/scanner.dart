@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:dio/dio.dart';
 import 'dart:convert';
-//google books api key AIzaSyAdS3kr701E4g5sCCboerYPMIL6Hfas8qs
 
 class Scanner extends StatefulWidget {
   const Scanner({super.key});
@@ -15,7 +14,9 @@ class Scanner extends StatefulWidget {
 
 class _ScannerState extends State<Scanner> {
   String _scanBarcode = 'empty';
-  String _bookName = 'empty'; 
+  String _bookName = 'empty';
+  String _authorName = 'empty';
+  String _bookCover = '';
 
   @override
   void initState() {
@@ -39,27 +40,35 @@ class _ScannerState extends State<Scanner> {
       _scanBarcode = barcodeScanRes;
     });
 
-      //buscar livro na api por isbn
-    if (_scanBarcode != '-1'){
+    //buscar livro na api por isbn
+    if (_scanBarcode != '-1') {
       getBook(_scanBarcode);
     }
   }
 
-  Future<void> getBook(String isbn) async{
-    try{
+  Future<void> getBook(String isbn) async {
+    try {
       var dio = Dio();
-      var response = await dio.request('https://www.googleapis.com/books/v1/volumes?q=isbn:$isbn&key=AIzaSyAdS3kr701E4g5sCCboerYPMIL6Hfas8qs',
-        options: Options(
-          method: 'GET',
-        ),
+      var response = await dio.get(
+        'http://openlibrary.org/api/books',
+        queryParameters: {
+          'bibkeys': 'ISBN:$isbn',
+          'jscmd': 'details',
+          'format': 'json',
+        },
       );
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
         var data = response.data;
+        var firstKey = data.keys.first;
+
         setState(() {
-          _bookName = data['items'][0]['volumeInfo']['title'] ?? 'Livro não encontrado';
+          _bookCover = 'https://covers.openlibrary.org/b/isbn/$isbn-M.jpg?default=false';
+          _bookName = data[firstKey]['details']['title'] ?? 'Livro não encontrado';
+          _authorName = data[firstKey]['details']['authors'][0]['name'] ?? 'Livro não encontrado';
+          
         });
       }
-    } catch(e){
+    } catch (e) {
       setState(() {
         _bookName = 'Erro ao buscar livro: $e';
       });
@@ -90,24 +99,31 @@ class _ScannerState extends State<Scanner> {
                     child: Text(
                       'Escanear código de barras',
                       style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16),
                     ),
                   ),
                   SizedBox(height: 50),
                   _scanBarcode != 'empty'
-                    ? Text('Código: $_scanBarcode\n',
-                      style: TextStyle(fontSize: 16)
-                    )
-                    
-                  : SizedBox(height: 0),
-                  
+                      ? Text('Código: $_scanBarcode\n',
+                          style: TextStyle(fontSize: 16))
+                      : SizedBox(height: 0),
                   _bookName != 'empty'
-                    ? Text(
-                      'Livro: $_bookName',
-                      style: TextStyle(fontSize: 16),
-                      textAlign: TextAlign.center,
-                    )
-                    : SizedBox(height: 0)
+                      ? Column(
+                          children: [
+                            Text(
+                              'Livro: $_bookName - $_authorName',
+                              style: TextStyle(fontSize: 16),
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(height: 20),
+                            _bookCover != 'empty'
+                                ? Image.network(_bookCover, height: 200)
+                                : Text('Imagem da capa não disponível'),
+                          ],
+                        )
+                      : SizedBox(height: 0)
                 ],
               ),
             );

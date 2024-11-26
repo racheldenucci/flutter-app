@@ -49,24 +49,25 @@ class _ScannerState extends State<Scanner> {
   Future<void> getBook(String isbn) async {
     try {
       var dio = Dio();
-      var response = await dio.get(
-        'https://search.worldcat.org/api/search?q=$isbn',
+
+      var response = await dio.request(
+        'https://brasilapi.com.br/api/isbn/v1/$isbn?providers=open-library|google-books|cbl|mercado-editorial',
         options: Options(
           method: 'GET',
-          
+          headers: {
+          'Accept': 'application/json',
+        }, 
         ),
       );
+      
       if (response.statusCode == 200) {
         var data = response.data;
-        var firstKey = data.keys.first;
 
         setState(() {
-          _bookCover = 'https://search.worldcat.org/api/search?q=$isbn';
-          _bookName =  data['briefRecords'][0]['title'] ??
-              'Livro não encontrado';
-          _authorName = data['briefRecords'][firstKey]['details']['authors'][0]
-                  ['name'] ??
-              'Livro não encontrado';
+          _bookCover = data['cover_url'] ?? 'empty';
+          _bookName =  data['title'] ?? 'Livro não encontrado';
+          _authorName = data['authors'][0] ?? 'Nome do autor não encontrado';
+          
         });
       }
     } catch (e) {
@@ -74,6 +75,7 @@ class _ScannerState extends State<Scanner> {
         _bookName = 'Erro ao buscar livro: $e';
       });
     }
+
   }
 
   @override

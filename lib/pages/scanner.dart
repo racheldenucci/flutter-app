@@ -50,22 +50,23 @@ class _ScannerState extends State<Scanner> {
     try {
       var dio = Dio();
       var response = await dio.get(
-        'http://openlibrary.org/api/books',
-        queryParameters: {
-          'bibkeys': 'ISBN:$isbn',
-          'jscmd': 'details',
-          'format': 'json',
-        },
+        'https://search.worldcat.org/api/search?q=$isbn',
+        options: Options(
+          method: 'GET',
+          
+        ),
       );
       if (response.statusCode == 200) {
         var data = response.data;
         var firstKey = data.keys.first;
 
         setState(() {
-          _bookCover = 'https://covers.openlibrary.org/b/isbn/$isbn-M.jpg?default=false';
-          _bookName = data[firstKey]['details']['title'] ?? 'Livro não encontrado';
-          _authorName = data[firstKey]['details']['authors'][0]['name'] ?? 'Livro não encontrado';
-          
+          _bookCover = 'https://search.worldcat.org/api/search?q=$isbn';
+          _bookName =  data['briefRecords'][0]['title'] ??
+              'Livro não encontrado';
+          _authorName = data['briefRecords'][firstKey]['details']['authors'][0]
+                  ['name'] ??
+              'Livro não encontrado';
         });
       }
     } catch (e) {

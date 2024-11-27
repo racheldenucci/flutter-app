@@ -104,6 +104,7 @@ class _LoginState extends State<Login> {
                     TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18.0),
               ),
             ),
+            //TODO: ADD ERRO DE LOGIN
           ),
         ],
       ),

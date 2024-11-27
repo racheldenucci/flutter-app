@@ -51,7 +51,7 @@ class _ScannerState extends State<Scanner> {
       var dio = Dio();
 
       var response = await dio.request(
-        'https://brasilapi.com.br/api/isbn/v1/$isbn?providers=open-library|google-books|cbl|mercado-editorial',
+        'https://brasilapi.com.br/api/isbn/v1/$isbn?providers=open-library,google-books',
         options: Options(
           method: 'GET',
           headers: {
@@ -122,6 +122,7 @@ class _ScannerState extends State<Scanner> {
                             _bookCover != 'empty'
                                 ? Image.network(_bookCover, height: 200)
                                 : Text('Imagem da capa não disponível'),
+                            SizedBox(height: 20),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.orange[400],

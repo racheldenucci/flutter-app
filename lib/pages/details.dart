@@ -13,6 +13,9 @@ class Details extends StatefulWidget {
 class _DetailsState extends State<Details> {
   String _title = 'Carregando...';
   String _author = 'Carregando...';
+  int _pages = 0;
+  int _year = 0;
+  String _synopsis = 'Carregando...';
   String _cover = '';
 
   @override
@@ -25,7 +28,7 @@ class _DetailsState extends State<Details> {
     try {
       var dio = Dio();
       var response = await dio.request(
-        'https://brasilapi.com.br/api/isbn/v1/${widget.isbn}?providers=open-library|google-books|cbl|mercado-editorial',
+        'https://brasilapi.com.br/api/isbn/v1/${widget.isbn}?providers=open-library,google-books',
         options: Options(
           method: 'GET',
           headers: {
@@ -35,11 +38,14 @@ class _DetailsState extends State<Details> {
       );
       if (response.statusCode == 200) {
         var data = response.data;
-
+        
         setState(() {
           _cover = data['cover_url'] ?? 'empty';
           _title = data['title'] ?? 'Livro não encontrado';
           _author = data['authors'][0] ?? 'Nome do autor não encontrado';
+          _synopsis = data['synopsis'] ?? 'Sinópse não disponível';
+          _pages = data['page_count'] ?? 0;
+          _year = data['year'] ?? 0;
         });
       }
     } catch (e) {
@@ -48,7 +54,6 @@ class _DetailsState extends State<Details> {
       });
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +78,7 @@ class _DetailsState extends State<Details> {
                   ),
             const SizedBox(height: 20),
             Text(
-              'Título: $_title',
+              _title,
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -81,7 +86,22 @@ class _DetailsState extends State<Details> {
             ),
             const SizedBox(height: 30),
             Text(
-              'Autor: $_author',
+              _author,
+              style: const TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 30),
+            Text(
+              '$_pages páginas',
+              style: const TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 30),
+            Text(
+              '$_year',
+              style: const TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 30),
+            Text(
+              'Sinópse: \n $_synopsis',
               style: const TextStyle(fontSize: 16),
             ),
           ],

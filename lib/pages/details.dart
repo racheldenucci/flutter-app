@@ -38,7 +38,7 @@ class _DetailsState extends State<Details> {
       );
       if (response.statusCode == 200) {
         var data = response.data;
-        
+
         setState(() {
           _cover = data['cover_url'] ?? 'empty';
           _title = data['title'] ?? 'Livro não encontrado';
@@ -61,54 +61,65 @@ class _DetailsState extends State<Details> {
       appBar: AppBar(
         title: Text(_title),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _cover.isNotEmpty
-                ? Center(
-                    child: Image.network(
-                      _cover,
-                      height: 250,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _cover.isNotEmpty
+                  ? Center(
+                      child: Image.network(
+                        _cover,
+                        height: 250,
+                      ),
+                    )
+                  : const Center(
+                      child: Text('Imagem da capa não disponível'),
                     ),
-                  )
-                : const Center(
-                    child: Text('Imagem da capa não disponível'),
-                  ),
-            const SizedBox(height: 20),
-            Text(
-              _title,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+              const SizedBox(height: 20),
+              Text(
+                _title,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            const SizedBox(height: 30),
-            Text(
-              _author,
-              style: const TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 30),
-            Text(
-              '$_pages páginas',
-              style: const TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 30),
-            Text(
-              '$_year',
-              style: const TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 30),
-            Text(
-              'Sinópse: \n $_synopsis',
-              style: const TextStyle(fontSize: 16),
-            ),
-          ],
+              const SizedBox(height: 10),
+              Text(
+                _author,
+                style: const TextStyle(fontSize: 18),
+              ),
+              const SizedBox(height: 30),
+              ElevatedButton(
+                onPressed: () {},
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.bookmark_add_outlined),
+                    Text('Adicionar a Meus Livros'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 30),
+              Text(
+                '$_pages páginas',
+                style: const TextStyle(fontSize: 18),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Ano: $_year',
+                style: const TextStyle(fontSize: 18),
+              ),
+              const SizedBox(height: 30),
+              Text(
+                'Sinópse: \n $_synopsis',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
-
-//TODO: add ano e qnt paginas e adicionar aos favoritos/bookmark

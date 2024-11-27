@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
+import 'package:flutter_application_2/pages/details.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:dio/dio.dart';
-import 'dart:convert';
 
 class Scanner extends StatefulWidget {
   const Scanner({super.key});
@@ -55,19 +55,18 @@ class _ScannerState extends State<Scanner> {
         options: Options(
           method: 'GET',
           headers: {
-          'Accept': 'application/json',
-        }, 
+            'Accept': 'application/json',
+          },
         ),
       );
-      
+
       if (response.statusCode == 200) {
         var data = response.data;
 
         setState(() {
           _bookCover = data['cover_url'] ?? 'empty';
-          _bookName =  data['title'] ?? 'Livro não encontrado';
+          _bookName = data['title'] ?? 'Livro não encontrado';
           _authorName = data['authors'][0] ?? 'Nome do autor não encontrado';
-          
         });
       }
     } catch (e) {
@@ -75,7 +74,6 @@ class _ScannerState extends State<Scanner> {
         _bookName = 'Erro ao buscar livro: $e';
       });
     }
-
   }
 
   @override
@@ -124,6 +122,28 @@ class _ScannerState extends State<Scanner> {
                             _bookCover != 'empty'
                                 ? Image.network(_bookCover, height: 200)
                                 : Text('Imagem da capa não disponível'),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.orange[400],
+                                padding: EdgeInsets.all(14.0),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.0)),
+                              ),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        Details(isbn: _scanBarcode),
+                                  ),
+                                );
+                              },
+                              child: Text('Mais detalhes',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18.0)),
+                            )
                           ],
                         )
                       : SizedBox(height: 0)

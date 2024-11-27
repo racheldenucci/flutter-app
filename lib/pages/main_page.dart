@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/pages/books.dart';
 import 'package:flutter_application_2/pages/profile.dart';
 import 'package:flutter_application_2/pages/scanner.dart';
 
@@ -13,6 +14,7 @@ class _MainPageState extends State<MainPage> {
 
   final List<Widget> pages = [
     const Profile(),
+    const MyBooks(),
     const Scanner()
   ];
 
@@ -29,15 +31,15 @@ class _MainPageState extends State<MainPage> {
             currentPage = value;
           });
         },
-        items: const [
-          /* BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Início'
-          ), */
+        items: const [ 
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Meu Perfil'
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.collections_bookmark),
+            label: 'Meus Livros'
+          ), 
           BottomNavigationBarItem(
             icon: Icon(Icons.camera_alt_rounded),
             label: 'Ler Código'

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/pages/home.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_application_2/pages/login.dart';
 import 'package:flutter_application_2/pages/scanner.dart';
 
 
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scanner(),
+      home: Home(),
     );
   }
 }

@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Details extends StatefulWidget {
   final String isbn;
@@ -17,11 +19,13 @@ class _DetailsState extends State<Details> {
   int _year = 0;
   String _synopsis = 'Carregando...';
   String _cover = '';
+  bool _isFavorite = false;
 
   @override
   void initState() {
     super.initState();
     getDetails();
+    checkIfFavorite();
   }
 
   Future<void> getDetails() async {
@@ -52,6 +56,64 @@ class _DetailsState extends State<Details> {
       setState(() {
         _title = 'Erro ao buscar livro: $e';
       });
+    }
+  }
+
+  Future<void> addToMyBooks(String title, String author, String isbn) async {
+    final user = FirebaseAuth.instance.currentUser;
+    print('Usuário autenticado: ${user?.uid}');
+    if (user != null) {
+      final userBooks = FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .collection('myBooks');
+
+      await userBooks.doc(isbn).set({
+        'title': title,
+        'author': author,
+      });
+
+      setState(() {
+        _isFavorite = true;
+      });
+    } else {
+      throw Exception('Usuário não autenticado');
+    }
+  }
+
+  Future<void> checkIfFavorite() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final userBooks = FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .collection('myBooks');
+
+      final doc = await userBooks.doc(widget.isbn).get();
+      if (doc.exists) {
+        setState(() {
+          _isFavorite = true;
+        });
+      }
+    }
+  }
+
+  Future<void> removeFromMyBooks(String isbn) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final userBooks = FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .collection('myBooks');
+
+      await userBooks.doc(isbn).delete();
+
+      // Atualize o estado para refletir que o livro não é mais favorito
+      setState(() {
+        _isFavorite = false;
+      });
+    } else {
+      throw Exception('Usuário não autenticado');
     }
   }
 
@@ -92,12 +154,36 @@ class _DetailsState extends State<Details> {
               ),
               const SizedBox(height: 30),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  try {
+                    if (_isFavorite) {
+                      await removeFromMyBooks(widget.isbn);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text('Removido de Meus Livros!')),
+                      );
+                    } else {
+                      await addToMyBooks(_title, _author, widget.isbn);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text('Livro adicionado a Meus Livros!')),
+                      );
+                    }
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Erro ao adicionar livro: $e')),
+                    );
+                  }
+                },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.bookmark_add_outlined),
-                    Text('Adicionar a Meus Livros'),
+                    Icon(_isFavorite
+                        ? Icons.check
+                        : Icons.bookmark_add_outlined),
+                    SizedBox(width: 8),
+                    Text(
+                        _isFavorite ? 'Adicionado' : 'Adicionar a Meus Livros'),
                   ],
                 ),
               ),

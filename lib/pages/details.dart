@@ -108,7 +108,6 @@ class _DetailsState extends State<Details> {
 
       await userBooks.doc(isbn).delete();
 
-      // Atualize o estado para refletir que o livro não é mais favorito
       setState(() {
         _isFavorite = false;
       });
@@ -129,16 +128,14 @@ class _DetailsState extends State<Details> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              
-                  Center(
-                      child: _cover != 'empty'
-                          ? Image.network(
-                              _cover,
-                              height: 250,
-                            )
-                          : Text('Imagem da capa não disponível'),
-                    ),
-                  
+              Center(
+                child: _cover != 'empty'
+                    ? Image.network(
+                        _cover,
+                        height: 250,
+                      )
+                    : Text('Imagem da capa não disponível'),
+              ),
               const SizedBox(height: 20),
               Text(
                 _title,
@@ -174,6 +171,12 @@ class _DetailsState extends State<Details> {
                     );
                   }
                 },
+
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange,
+                  foregroundColor: Colors.white,
+                ),
+                
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -182,7 +185,7 @@ class _DetailsState extends State<Details> {
                         : Icons.bookmark_add_outlined),
                     SizedBox(width: 8),
                     Text(
-                        _isFavorite ? 'Adicionado' : 'Adicionar a Meus Livros'),
+                        _isFavorite ? 'Adicionado a Meus Livros' : 'Adicionar a Meus Livros'),
                   ],
                 ),
               ),

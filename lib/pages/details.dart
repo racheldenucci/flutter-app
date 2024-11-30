@@ -129,16 +129,16 @@ class _DetailsState extends State<Details> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _cover.isNotEmpty
-                  ? Center(
-                      child: Image.network(
-                        _cover,
-                        height: 250,
-                      ),
-                    )
-                  : const Center(
-                      child: Text('Imagem da capa não disponível'),
+              
+                  Center(
+                      child: _cover != 'empty'
+                          ? Image.network(
+                              _cover,
+                              height: 250,
+                            )
+                          : Text('Imagem da capa não disponível'),
                     ),
+                  
               const SizedBox(height: 20),
               Text(
                 _title,
@@ -159,8 +159,7 @@ class _DetailsState extends State<Details> {
                     if (_isFavorite) {
                       await removeFromMyBooks(widget.isbn);
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content: Text('Removido de Meus Livros!')),
+                        SnackBar(content: Text('Removido de Meus Livros!')),
                       );
                     } else {
                       await addToMyBooks(_title, _author, widget.isbn);

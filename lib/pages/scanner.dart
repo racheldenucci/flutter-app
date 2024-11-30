@@ -69,11 +69,28 @@ class _ScannerState extends State<Scanner> {
           _authorName = data['authors'][0] ?? 'Nome do autor não encontrado';
         });
       }
-    } catch (e) {
-      setState(() {
-        _bookName = 'Erro ao buscar livro: $e';
-      });
+    } on DioException catch(e){
+      if (e.response?.statusCode == 404){
+        setState(() {
+          _bookName = '404: Livro não disponível, por favor tente outro.';
+        });
+      } else{
+        setState(() {
+          _bookName = 'Erro ao buscar livro: $e';
+        });
+      }
     }
+    //   if(response.statusCode == 404){
+    //     setState(() {
+    //       _bookName = 'Livro não disponível, por favor tente outro';
+    //     });
+    //   }
+    // } catch (e) {
+      
+    //   setState(() {
+    //     _bookName = 'Erro ao buscar livro: $e';
+    //   });
+    // }
   }
 
   @override
@@ -114,7 +131,7 @@ class _ScannerState extends State<Scanner> {
                       ? Column(
                           children: [
                             Text(
-                              'Livro: $_bookName - $_authorName',
+                              '$_bookName - $_authorName',
                               style: TextStyle(fontSize: 16),
                               textAlign: TextAlign.center,
                             ),
@@ -139,11 +156,13 @@ class _ScannerState extends State<Scanner> {
                                   ),
                                 );
                               },
-                              child: Text('Mais detalhes',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18.0)),
+                              child: Text(
+                                'Mais detalhes',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18.0),
+                              ),
                             )
                           ],
                         )

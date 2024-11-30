@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_2/pages/books.dart';
 import 'package:flutter_application_2/pages/profile.dart';
 import 'package:flutter_application_2/pages/scanner.dart';
-import 'package:flutter_application_2/pages/search.dart';
+//import 'package:flutter_application_2/pages/search.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});

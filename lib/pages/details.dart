@@ -32,7 +32,7 @@ class _DetailsState extends State<Details> {
     try {
       var dio = Dio();
       var response = await dio.request(
-        'https://brasilapi.com.br/api/isbn/v1/${widget.isbn}?providers=open-library,google-books',
+        'https://brasilapi.com.br/api/isbn/v1/${widget.isbn}?providers=google-books,open-library',
         options: Options(
           method: 'GET',
           headers: {

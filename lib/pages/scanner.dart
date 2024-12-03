@@ -51,7 +51,7 @@ class _ScannerState extends State<Scanner> {
       var dio = Dio();
 
       var response = await dio.request(
-        'https://brasilapi.com.br/api/isbn/v1/$isbn?providers=open-library,google-books',
+        'https://brasilapi.com.br/api/isbn/v1/$isbn?providers=google-books,open-library',
         options: Options(
           method: 'GET',
           headers: {
